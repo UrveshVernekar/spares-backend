@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # from app.api.query import router as query_router
@@ -5,9 +6,15 @@ from fastapi.middleware.cors import CORSMiddleware
 # from app.api.chats import router as chats_router
 # from app.api.messages import router as messages_router
 from app.controllers.spares import router as spares_router
+from app.db.init_db import init_db
 
 
-app = FastAPI(title="SPARES APP")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(title="SPARES APP", lifespan=lifespan)
 
 
 app.add_middleware(
