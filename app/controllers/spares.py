@@ -8,3 +8,9 @@ router = APIRouter(prefix="/api/spares", tags=["Spares"])
 def get_spares_data():
     data = SparesService.get_all_spares()
     return SparesService.get_spares_summary(data)
+
+
+@router.get("/pool-data")
+def get_pool_data():
+    data = SparesService.get_all_pool_spares()
+    return SparesService.get_pool_summary(data)
