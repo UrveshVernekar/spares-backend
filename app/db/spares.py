@@ -283,3 +283,45 @@ def get_pool_data():
         if 'conn' in locals() and conn:
             conn.close()
         return {"success": False, "error": str(e)}
+
+def get_spares_meta(search: str = None):
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        
+        # Get unique materials with description
+        if search:
+            cur.execute("""
+                SELECT material, material_description 
+                FROM spares.material_master 
+                WHERE material ILIKE %s OR material_description ILIKE %s
+                ORDER BY material 
+                LIMIT 100
+            """, (f"%{search}%", f"%{search}%"))
+        else:
+            cur.execute("""
+                SELECT material, material_description 
+                FROM spares.material_master 
+                ORDER BY material 
+                LIMIT 100
+            """)
+        
+        materials = [{"id": r[0], "label": f"{r[0]} - {r[1]}"} for r in cur.fetchall()]
+        
+        # Get unique plants (always few enough to load at once)
+        cur.execute("SELECT DISTINCT plnt FROM spares.spares_data ORDER BY plnt")
+        plants = [str(r[0]) for r in cur.fetchall()]
+        
+        cur.close()
+        conn.close()
+        
+        return {
+            "success": True,
+            "materials": materials,
+            "plants": plants
+        }
+    except Exception as e:
+        print(f"Meta API Error: {e}")
+        if 'conn' in locals() and conn:
+            conn.close()
+        return {"success": False, "error": str(e)}
