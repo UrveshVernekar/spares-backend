@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # from app.api.chats import router as chats_router
 # from app.api.messages import router as messages_router
 from app.controllers.spares import router as spares_router
+from app.controllers.predictions import router as predictions_router
 from app.db.init_db import init_db
 
 
@@ -31,3 +32,4 @@ app.add_middleware(
 # app.include_router(chats_router)
 # app.include_router(messages_router)
 app.include_router(spares_router)
+app.include_router(predictions_router)

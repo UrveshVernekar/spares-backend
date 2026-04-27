@@ -14,3 +14,8 @@ def get_spares_data():
 def get_pool_data():
     data = SparesService.get_all_pool_spares()
     return SparesService.get_pool_summary(data)
+
+
+@router.get("/meta")
+def get_spares_meta(search: str = None):
+    return SparesService.get_spares_meta(search)
